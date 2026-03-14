@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: finpulse-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: finpulse
+    ports:
+      - "5432:5432"
+    volumes:
+      - finpulse_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  finpulse_postgres_data:
