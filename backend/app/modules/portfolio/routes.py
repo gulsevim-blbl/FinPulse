@@ -42,6 +42,7 @@ def list_portfolio_items(
 
         result.append(
             PortfolioSummary(
+                id=item.id,
                 symbol=item.symbol,
                 quantity=item.quantity,
                 average_buy_price=item.average_buy_price,

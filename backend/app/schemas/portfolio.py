@@ -31,6 +31,7 @@ class PortfolioItemResponse(PortfolioItemCreate):
 
 
 class PortfolioSummary(BaseModel):
+    id: int
     symbol: str
     quantity: float
     average_buy_price: float

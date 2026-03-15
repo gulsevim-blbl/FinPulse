@@ -14,5 +14,15 @@ class Settings(BaseSettings):
     app_name: str = "FinPulse"
     app_version: str = "0.1.0"
 
+    # SMTP Settings
+    smtp_tls: bool = True
+    smtp_ssl: bool = False
+    smtp_port: int = 587
+    smtp_host: str = ""
+    smtp_user: str = ""
+    smtp_password: str = ""
+    emails_from_email: str = ""
+    emails_from_name: str = "FinPulse"
+
 
 settings = Settings()

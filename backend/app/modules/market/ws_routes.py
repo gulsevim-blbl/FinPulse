@@ -1,35 +1,31 @@
 import asyncio
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-
-from app.services.market_service import get_market_coins
+from app.services.okx_service import okx_service
 
 router = APIRouter()
-
 
 @router.websocket("/ws/prices")
 async def websocket_prices(websocket: WebSocket):
     await websocket.accept()
-
+    
+    # OKX güncellemelerine abone ol
+    q = okx_service.subscribe()
+    
     try:
-        while True:
-            coins = get_market_coins(vs_currency="usd", per_page=5, page=1)
-
-            simplified_data = [
-                {
-                    "symbol": coin["symbol"],
-                    "name": coin["name"],
-                    "current_price": coin["current_price"],
-                    "price_change_percentage_24h": coin["price_change_percentage_24h"],
-                }
-                for coin in coins
-            ]
-
+        # Eğer varsa mevcut fiyatları hemen gönder
+        if okx_service.prices:
             await websocket.send_json({
                 "type": "price_update",
-                "data": simplified_data
+                "data": list(okx_service.prices.values())
             })
 
-            await asyncio.sleep(5)
-
+        while True:
+            # OKX servisinden yeni güncelleme bekle
+            update = await q.get()
+            await websocket.send_json(update)
+            
     except WebSocketDisconnect:
-        print("WebSocket client disconnected")
+        okx_service.unsubscribe(q)
+    except Exception as e:
+        print(f"WebSocket send error: {e}")
+        okx_service.unsubscribe(q)
