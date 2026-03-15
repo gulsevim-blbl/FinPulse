@@ -10,8 +10,9 @@ class OKXService:
     def __init__(self):
         self.url = "wss://ws.okx.com:8443/ws/v5/public"
         self.inst_ids = [
-            "BTC-USDT", "ETH-USDT", "SOL-USDT", "ADA-USDT", "AVAX-USDT", "XRP-USDT", "DOT-USDT",
-            "BTC-TRY", "ETH-TRY", "USDT-TRY"
+            "BTC-USDT", "ETH-USDT", "SOL-USDT", "ADA-USDT", "AVAX-USDT", 
+            "XRP-USDT", "DOT-USDT", "DOGE-USDT", "PEPE-USDT", "TON-USDT",
+            "BTC-TRY", "ETH-TRY", "SOL-TRY", "XRP-TRY", "DOGE-TRY", "USDT-TRY"
         ]
         self.prices: Dict[str, dict] = {}
         self.subscribers: Set[asyncio.Queue] = set()
@@ -51,36 +52,35 @@ class OKXService:
                         data = json.loads(message)
                         if "data" in data:
                             for ticker in data["data"]:
-                                inst_id = ticker["instId"]
+                                inst_id = ticker["instId"] # e.g. "BTC-USDT"
+                                symbol = inst_id # Use full ID for clear distinction
                                 base_coin, quote = inst_id.split("-")
-                                
-                                # Sembol isimlendirmesi: USDT ise sadece coin adı, TRY ise coin+try
-                                if quote == "USDT":
-                                    symbol = base_coin.lower()
-                                else:
-                                    symbol = f"{base_coin.lower()}{quote.lower()}"
                                 
                                 last_price = float(ticker["last"])
                                 open_24h = float(ticker["open24h"])
                                 change_24h = ((last_price - open_24h) / open_24h) * 100 if open_24h != 0 else 0
                                 
                                 name_map = {
-                                    "btc": "Bitcoin",
-                                    "btctry": "Bitcoin (TRY)",
-                                    "eth": "Ethereum",
-                                    "ethtry": "Ethereum (TRY)",
-                                    "sol": "Solana",
-                                    "ada": "Cardano",
-                                    "avax": "Avalanche",
-                                    "xrp": "XRP",
-                                    "dot": "Polkadot",
-                                    "usdttry": "Tether (TRY)"
+                                    "BTC": "Bitcoin",
+                                    "ETH": "Ethereum",
+                                    "SOL": "Solana",
+                                    "ADA": "Cardano",
+                                    "AVAX": "Avalanche",
+                                    "XRP": "XRP",
+                                    "DOT": "Polkadot",
+                                    "DOGE": "Dogecoin",
+                                    "PEPE": "Pepe",
+                                    "TON": "Toncoin",
+                                    "USDT": "Tether"
                                 }
+
+                                base_name = name_map.get(base_coin, base_coin)
+                                display_name = f"{base_name} ({quote})"
 
                                 self.prices[symbol] = {
                                     "symbol": symbol,
-                                    "name": name_map.get(symbol, f"{base_coin} ({quote})"),
-                                    "current_price": round(last_price, 2) if last_price > 1 else round(last_price, 6),
+                                    "name": display_name,
+                                    "current_price": round(last_price, 2) if last_price > 0.1 else round(last_price, 8),
                                     "price_change_percentage_24h": round(change_24h, 2)
                                 }
                             

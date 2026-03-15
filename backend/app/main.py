@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 from app.services.okx_service import okx_service
+from app.services.alert_manager import alert_manager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -28,14 +29,18 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning("Veritabanı bağlantısı kurulamadı, tablolar oluşturulmadı: %s", e)
     
-    # Start OKX Service
+    # Start Services
     await okx_service.start()
+    await alert_manager.start()
     
     yield
     
-    # Stop OKX Service
+    # Stop Services
+    await alert_manager.stop()
     await okx_service.stop()
 
+
+from app.modules.notifications.routes import router as notifications_router
 
 app = FastAPI(
     lifespan=lifespan,
@@ -56,6 +61,7 @@ app.include_router(portfolio_router)
 app.include_router(market_router)
 app.include_router(watchlist_router)
 app.include_router(alerts_router)
+app.include_router(notifications_router)
 app.include_router(market_ws_router)
 
 

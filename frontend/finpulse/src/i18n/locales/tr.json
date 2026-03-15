@@ -2,7 +2,7 @@
     "common": {
         "dashboard": "Dashboard",
         "portfolio": "Portföy",
-        "watchlist": "Watchlist",
+        "watchlist": "İzleme Listesi",
         "alerts": "Alarmlar",
         "logout": "Çıkış Yap",
         "loggedInAs": "Giriş Yapan",
@@ -22,7 +22,21 @@
         "status": "Durum",
         "action": "İşlem",
         "symbolPlaceholder": "Coin Sembolü (Örn: BTC)",
-        "priceSymbol": "$"
+        "priceSymbol": "$",
+        "confirmTitle": "Emin misiniz?",
+        "confirmDelete": "Evet, Sil",
+        "deleteConfirmation": "Bu öğeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.",
+        "logoutConfirm": "Çıkış Yapılsın mı?",
+        "logoutMessage": "Oturumunuz kapatılacaktır. Devam etmek istiyor musunuz?",
+        "logoutAction": "Çıkış Yap",
+        "notifications": "Bildirimler",
+        "unreadMsg": "Okunmamış",
+        "allMarkedRead": "Tümü okundu işaretlendi",
+        "markAllRead": "Tümünü Okundu İşaretle",
+        "noNotifications": "Henüz bildirim yok",
+        "noNotificationsDesc": "Alarmlarınız tetiklendiğinde burada görünecek.",
+        "markAsRead": "Okundu İşaretle",
+        "changeLanguage": "Dili Değiştir"
     },
     "dashboard": {
         "title": "Genel Bakış",
@@ -35,20 +49,21 @@
         "totalProfitLoss": "Toplam Kâr / Zarar",
         "activeAlertCount": "Aktif Alarm Sayısı",
         "coinCountInPortfolio": "Portföydeki Coin Sayısı",
-        "watchlistCount": "Watchlist Sayısı",
+        "watchlistCount": "İzleme Listesi Sayısı",
         "alertManagement": "Alarm Yönetimi",
         "goToPortfolio": "Portföye Git",
-        "goToWatchlist": "Watchlist'e Git",
+        "goToWatchlist": "İzleme Listesine Git",
         "goToAlerts": "Alarmlara Git",
         "liveMarketPrices": "Canlı Piyasa Fiyatları",
         "realTimeData": "WebSocket ile gerçek zamanlı veri akışı",
         "waitingForData": "Veri Bekleniyor",
         "waitingForDataDesc": "Soket bağlantısı üzerinden canlı fiyat verilerinin akışı bekleniyor. Lütfen bekleyin.",
         "fetchError": "Dashboard verileri alınırken hata oluştu!",
-        "active": "aktif"
+        "active": "aktif",
+        "currentPrice": "Güncel Fiyat"
     },
     "auth": {
-        "welcomeBack": "Tekrar Hoş Geldiniz",
+        "welcome": "Hoş Geldiniz",
         "loginDescription": "FinPulse hesabınıza giriş yapmak için bilgilerinizi girin.",
         "email": "E-posta",
         "password": "Şifre",
@@ -98,15 +113,15 @@
         "toastCheckError": "Alarm kontrolü başarısız."
     },
     "watchlist": {
-        "title": "Watchlist",
+        "title": "İzleme Listesi",
         "description": "Takip etmek istediğin coinleri favorilerine ekle.",
         "addFavorite": "Favori Coin Ekle",
-        "addButton": "Watchlist'e Ekle",
+        "addButton": "İzleme Listesine Ekle",
         "adding": "Ekleniyor...",
         "myFavorites": "Favori Coinlerim",
-        "emptyState": "Watchlist Boş",
+        "emptyState": "İzleme Listesi Boş",
         "emptyStateDesc": "Piyasayı yakından takip etmek için sol taraftan coin ekleyerek ilk favorini oluştur.",
-        "toastAdded": "Watchlist'e eklendi!",
+        "toastAdded": "İzleme Listesine eklendi!",
         "toastAddError": "Coin eklenemedi. Zaten eklenmiş olabilir.",
         "toastDeleted": "Coin favorilerden kaldırıldı.",
         "toastDeleteError": "Coin silinemedi."
@@ -139,5 +154,24 @@
         "toastRefreshError": "Fiyatlar güncellenemedi.",
         "toastDeleted": "Coin silindi.",
         "toastDeleteError": "Coin silinemedi."
+    },
+    "coinDetail": {
+        "title": "Coin Detayı",
+        "marketCap": "Piyasa Değeri",
+        "volume": "24s Hacim",
+        "high24h": "24s En Yüksek",
+        "low24h": "24s En Düşük",
+        "circulatingSupply": "Dolaşımdaki Arz",
+        "allTimeHigh": "Tüm Zamanların En Yükseği",
+        "allTimeLow": "Tüm Zamanların En Düşüğü",
+        "description": "Hakkında",
+        "performance": "Performans",
+        "links": "Bağlantılar",
+        "website": "Web Sitesi",
+        "explorer": "Gezgin",
+        "rank": "Sıralama",
+        "priceChart": "Fiyat Grafiği (Son 7 Gün)",
+        "backToMarket": "Piyasaya Dön",
+        "lastUpdated": "Son Güncelleme"
     }
 }

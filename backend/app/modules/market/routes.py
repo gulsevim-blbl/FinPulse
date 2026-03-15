@@ -17,3 +17,11 @@ def list_market_coins(
         return coins
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch market data: {str(e)}")
+
+@router.get("/coins/{coin_id}")
+def get_coin_detail(coin_id: str):
+    from app.services.market_service import get_coin_details
+    details = get_coin_details(coin_id)
+    if not details:
+        raise HTTPException(status_code=404, detail="Coin not found")
+    return details

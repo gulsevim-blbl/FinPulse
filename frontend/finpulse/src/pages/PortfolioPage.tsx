@@ -6,12 +6,31 @@ import { toast } from "sonner";
 import { Wallet, Trash2, RefreshCw, Plus } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+
+import ConfirmModal from "../components/ConfirmModal";
 
 export default function PortfolioPage() {
     const { portfolio: items, fetchPortfolio, loadingPortfolio: loading } = useAppStore();
     const [submitting, setSubmitting] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const { t } = useTranslation();
+    const navigate = useNavigate();
+
+    const getCoinId = (symbol: string) => {
+        const symbolToId: Record<string, string> = {
+            "btc": "bitcoin",
+            "eth": "ethereum",
+            "sol": "solana",
+            "ada": "cardano",
+            "avax": "avalanche-2",
+            "xrp": "ripple",
+            "dot": "polkadot",
+        };
+        return symbolToId[symbol.toLowerCase()] || symbol.toLowerCase();
+    };
 
     const [form, setForm] = useState({
         symbol: "",
@@ -71,13 +90,16 @@ export default function PortfolioPage() {
         }
     };
 
-    const handleDelete = async (id: number) => {
+    const confirmDelete = async () => {
+        if (itemToDelete === null) return;
         try {
-            await deletePortfolioItem(id);
+            await deletePortfolioItem(itemToDelete);
             await fetchPortfolio();
             toast.success(t("portfolio.toastDeleted"));
         } catch (err) {
             toast.error(t("portfolio.toastDeleteError"));
+        } finally {
+            setItemToDelete(null);
         }
     };
 
@@ -256,7 +278,10 @@ export default function PortfolioPage() {
                                     {items.map((item) => (
                                         <tr key={item.id} className="border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors group">
                                             <td className="py-4 pr-4 font-bold text-white">
-                                                <div className="flex items-center gap-2">
+                                                <div 
+                                                    className="flex items-center gap-2 cursor-pointer hover:text-cyan-400 transition-colors"
+                                                    onClick={() => navigate(`/coin/${getCoinId(item.symbol)}`)}
+                                                >
                                                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-slate-700 to-slate-800 text-xs text-white shadow-inner">
                                                         {item.symbol.substring(0, 1)}
                                                     </div>
@@ -275,7 +300,10 @@ export default function PortfolioPage() {
                                             </td>
                                             <td className="py-4 pr-4">
                                                 <button
-                                                    onClick={() => handleDelete(item.id)}
+                                                    onClick={() => {
+                                                        setItemToDelete(item.id);
+                                                        setIsConfirmOpen(true);
+                                                    }}
                                                     className="flex items-center justify-center rounded-lg bg-rose-500/10 p-2 text-rose-400 transition-colors hover:bg-rose-500/20 opacity-0 group-hover:opacity-100 focus:opacity-100"
                                                     title={t("common.delete")}
                                                 >
@@ -290,6 +318,15 @@ export default function PortfolioPage() {
                     )}
                 </motion.div>
             </motion.section>
+
+            <ConfirmModal 
+                isOpen={isConfirmOpen}
+                onClose={() => {
+                    setIsConfirmOpen(false);
+                    setItemToDelete(null);
+                }}
+                onConfirm={confirmDelete}
+            />
         </motion.div>
     );
 }

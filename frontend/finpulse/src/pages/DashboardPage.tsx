@@ -225,15 +225,39 @@ export default function DashboardPage() {
                     </motion.div>
                 ) : (
                     <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-                        {prices.map((coin) => (
-                            <PriceCard
-                                key={coin.symbol}
-                                symbol={coin.symbol}
-                                name={coin.name}
-                                current_price={coin.current_price}
-                                price_change_percentage_24h={coin.price_change_percentage_24h}
-                            />
-                        ))}
+                        {prices.map((coin) => {
+                            // Map OKX symbols to CoinGecko IDs
+                            const symbolToId: Record<string, string> = {
+                                "BTC-USDT": "bitcoin",
+                                "ETH-USDT": "ethereum",
+                                "SOL-USDT": "solana",
+                                "ADA-USDT": "cardano",
+                                "AVAX-USDT": "avalanche-2",
+                                "XRP-USDT": "ripple",
+                                "DOT-USDT": "polkadot",
+                                "DOGE-USDT": "dogecoin",
+                                "PEPE-USDT": "pepe",
+                                "TON-USDT": "the-open-network",
+                                "BTC-TRY": "bitcoin",
+                                "ETH-TRY": "ethereum",
+                                "SOL-TRY": "solana",
+                                "XRP-TRY": "ripple",
+                                "DOGE-TRY": "dogecoin",
+                                "USDT-TRY": "tether"
+                            };
+                            const coinId = symbolToId[coin.symbol] || coin.symbol.split('-')[0].toLowerCase();
+
+                            return (
+                                <PriceCard
+                                    key={coin.symbol}
+                                    symbol={coin.symbol}
+                                    name={coin.name}
+                                    current_price={coin.current_price}
+                                    price_change_percentage_24h={coin.price_change_percentage_24h}
+                                    onClick={() => navigate(`/coin/${coinId}`)}
+                                />
+                            );
+                        })}
                     </div>
                 )}
             </motion.section>

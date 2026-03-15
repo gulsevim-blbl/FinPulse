@@ -1,8 +1,10 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, PieChart, Star, Bell, LogOut, Menu, X, Activity, Languages } from "lucide-react";
+import { LayoutDashboard, PieChart, Star, Bell, LogOut, Menu, X, Activity, Languages, User } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import ConfirmModal from "../components/ConfirmModal";
+import NotificationCenter from "../components/NotificationCenter";
 
 type AppLayoutProps = {
     fullName?: string;
@@ -12,6 +14,7 @@ export default function AppLayout({ fullName }: AppLayoutProps) {
     const navigate = useNavigate();
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
     const { t, i18n } = useTranslation();
 
     const navItems = [
@@ -104,27 +107,16 @@ export default function AppLayout({ fullName }: AppLayoutProps) {
                         </nav>
                     </div>
 
-                    <div className="mt-auto px-4 pb-8">
-                        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm relative overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
-                            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">{t("common.loggedInAs")}</p>
-                            <p className="mt-1 font-semibold text-white truncate">
-                                {fullName || t("common.user")}
-                            </p>
-
-                            <button
-                                onClick={handleLogout}
-                                className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-white/10 border border-white/5 px-4 py-2.5 text-sm font-medium text-white transition-all hover:bg-white/20 hover:shadow-lg hover:shadow-white/5"
-                            >
-                                <LogOut className="h-4 w-4" />
-                                {t("common.logout")}
-                            </button>
+                    <div className="px-6 py-8 mt-auto">
+                        <div className="rounded-2xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 p-4 border border-cyan-500/10">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-cyan-400/80 mb-1">FinPulse Pro</p>
+                            <p className="text-xs text-slate-400 leading-relaxed">Piyasa verileri anlık olarak güncellenmektedir.</p>
                         </div>
                     </div>
                 </aside>
 
                 <div className="flex-1 flex flex-col w-full min-w-0">
-                    <header className="sticky top-0 z-30 flex items-center justify-between border-b border-white/5 bg-[#0B0F19]/80 backdrop-blur-xl px-6 py-5 lg:px-8">
+                    <header className="sticky top-0 z-30 flex items-center justify-between border-b border-white/5 bg-[#0B0F19]/80 backdrop-blur-xl px-4 py-3 lg:px-8">
                         <div className="flex items-center gap-4">
                             <button 
                                 onClick={() => setIsMobileMenuOpen(true)}
@@ -132,19 +124,49 @@ export default function AppLayout({ fullName }: AppLayoutProps) {
                             >
                                 <Menu className="h-6 w-6" />
                             </button>
-                            <h2 className="text-xl font-semibold text-white/90 tracking-tight hidden sm:block">
+                            <h2 className="text-lg font-semibold text-white/90 tracking-tight hidden sm:block">
                                 {t("common.adminPanel")}
                             </h2>
                         </div>
 
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 sm:gap-4">
+                            {/* Notification Center */}
+                            <NotificationCenter />
+
+                            {/* Language Toggle */}
                             <button
                                 onClick={toggleLanguage}
-                                className="flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-3 py-1.5 text-sm font-medium text-white transition-all hover:bg-white/10"
+                                title={t("common.changeLanguage")}
+                                className="flex h-10 items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-3 text-sm font-medium text-white transition-all hover:bg-white/10"
                             >
                                 <Languages className="h-4 w-4 text-cyan-400" />
-                                <span className="uppercase">{i18n.language.split("-")[0]}</span>
+                                <span className="uppercase text-xs font-bold">{i18n.language.split("-")[0]}</span>
                             </button>
+
+                            {/* Divider */}
+                            <div className="h-6 w-px bg-white/10 hidden xs:block" />
+
+                            {/* User Profile and Logout */}
+                            <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl pl-1 pr-1 py-1">
+                                <div className="hidden md:flex flex-col items-end px-2">
+                                    <span className="text-[10px] font-bold uppercase tracking-tighter text-slate-500 leading-none mb-0.5">Giriş Yapan</span>
+                                    <span className="text-xs font-bold text-white leading-none truncate max-w-[120px]">
+                                        {fullName || t("common.user")}
+                                    </span>
+                                </div>
+                                
+                                <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-xs font-bold text-cyan-400 shadow-inner md:order-first">
+                                    {fullName ? fullName.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
+                                </div>
+
+                                <button
+                                    onClick={() => setIsLogoutConfirmOpen(true)}
+                                    title={t("common.logout")}
+                                    className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-500/10 text-rose-400 transition-all hover:bg-rose-500 hover:text-white group"
+                                >
+                                    <LogOut className="h-4 w-4" />
+                                </button>
+                            </div>
                         </div>
                     </header>
 
@@ -153,7 +175,15 @@ export default function AppLayout({ fullName }: AppLayoutProps) {
                     </main>
                 </div>
             </div>
+
+            <ConfirmModal 
+                isOpen={isLogoutConfirmOpen}
+                onClose={() => setIsLogoutConfirmOpen(false)}
+                onConfirm={handleLogout}
+                title={t("common.logoutConfirm")}
+                message={t("common.logoutMessage")}
+                confirmText={t("common.logoutAction")}
+            />
         </div>
     );
 }
-

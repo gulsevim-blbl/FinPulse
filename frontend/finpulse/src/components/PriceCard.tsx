@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 type PriceCardProps = {
     symbol: string;
     name: string;
     current_price: number;
     price_change_percentage_24h?: number | null;
+    onClick?: () => void;
 };
 
 export default function PriceCard({
@@ -12,16 +14,20 @@ export default function PriceCard({
     name,
     current_price,
     price_change_percentage_24h,
+    onClick,
 }: PriceCardProps) {
+    const { t } = useTranslation();
     const isPositive = (price_change_percentage_24h ?? 0) >= 0;
 
     return (
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -5 }}
+            whileHover={{ y: -5, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-md transition-all hover:bg-white/10"
+            onClick={onClick}
+            className={`group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-md transition-all hover:bg-white/10 ${onClick ? 'cursor-pointer' : ''}`}
         >
             <div className="absolute inset-0 bg-gradient-to-br from-white/[0.05] to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
             
@@ -51,11 +57,16 @@ export default function PriceCard({
             </div>
 
             <div className="relative mt-8">
-                <p className="text-sm font-medium text-slate-400">Güncel Fiyat</p>
+                <p className="text-sm font-medium text-slate-400">{t("dashboard.currentPrice")}</p>
                 <div className="mt-1 flex items-baseline gap-1">
-                    <span className="text-2xl font-semibold text-slate-400">$</span>
+                    <span className="text-2xl font-semibold text-slate-400">
+                        {symbol.endsWith("-TRY") ? "₺" : "$"}
+                    </span>
                     <p className="text-3xl font-bold tracking-tight text-white">
-                        {current_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 })}
+                        {current_price.toLocaleString(undefined, { 
+                            minimumFractionDigits: current_price < 1 ? 4 : 2, 
+                            maximumFractionDigits: current_price < 1 ? 8 : 2 
+                        })}
                     </p>
                 </div>
             </div>

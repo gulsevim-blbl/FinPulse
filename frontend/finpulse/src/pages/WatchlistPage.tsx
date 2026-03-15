@@ -6,12 +6,31 @@ import { toast } from "sonner";
 import { Star, Trash2, Plus } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+
+import ConfirmModal from "../components/ConfirmModal";
 
 export default function WatchlistPage() {
     const { watchlist: items, fetchWatchlist, loadingWatchlist: loading } = useAppStore();
     const [submitting, setSubmitting] = useState(false);
     const [symbol, setSymbol] = useState("");
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const { t } = useTranslation();
+    const navigate = useNavigate();
+
+    const getCoinId = (symbol: string) => {
+        const symbolToId: Record<string, string> = {
+            "btc": "bitcoin",
+            "eth": "ethereum",
+            "sol": "solana",
+            "ada": "cardano",
+            "avax": "avalanche-2",
+            "xrp": "ripple",
+            "dot": "polkadot",
+        };
+        return symbolToId[symbol.toLowerCase()] || symbol.toLowerCase();
+    };
 
     useEffect(() => {
         if (items.length === 0) {
@@ -35,13 +54,16 @@ export default function WatchlistPage() {
         }
     };
 
-    const handleDelete = async (id: number) => {
+    const confirmDelete = async () => {
+        if (itemToDelete === null) return;
         try {
-            await deleteWatchlistItem(id);
+            await deleteWatchlistItem(itemToDelete);
             await fetchWatchlist();
             toast.success(t("watchlist.toastDeleted"));
         } catch (err) {
             toast.error(t("watchlist.toastDeleteError"));
+        } finally {
+            setItemToDelete(null);
         }
     };
 
@@ -122,7 +144,8 @@ export default function WatchlistPage() {
                             {items.map((item) => (
                                 <div
                                     key={item.id}
-                                    className="group relative flex items-center justify-between rounded-2xl border border-white/5 bg-white/5 p-4 transition-all hover:bg-white/10 hover:border-white/10 shadow-sm hover:shadow-lg"
+                                    onClick={() => navigate(`/coin/${getCoinId(item.symbol)}`)}
+                                    className="group relative flex items-center justify-between rounded-2xl border border-white/5 bg-white/5 p-4 transition-all hover:bg-white/10 hover:border-white/10 shadow-sm hover:shadow-lg cursor-pointer"
                                 >
                                     <div className="flex items-center gap-3">
                                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 text-sm font-bold text-white shadow-inner">
@@ -132,14 +155,18 @@ export default function WatchlistPage() {
                                             <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                                                 {t("common.coin")}
                                             </p>
-                                            <h3 className="mt-0.5 text-lg font-bold tracking-tight text-white">
+                                            <h3 className="mt-0.5 text-lg font-bold tracking-tight text-white group-hover:text-cyan-400 transition-colors">
                                                 {item.symbol}
                                             </h3>
                                         </div>
                                     </div>
 
                                     <button
-                                        onClick={() => handleDelete(item.id)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setItemToDelete(item.id);
+                                            setIsConfirmOpen(true);
+                                        }}
                                         className="flex items-center justify-center rounded-lg bg-rose-500/10 p-2.5 text-rose-400 transition-all hover:bg-rose-500/20 opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 focus:opacity-100 focus:scale-100"
                                         title={t("common.delete")}
                                     >
@@ -151,6 +178,15 @@ export default function WatchlistPage() {
                     )}
                 </motion.div>
             </motion.section>
+
+            <ConfirmModal 
+                isOpen={isConfirmOpen}
+                onClose={() => {
+                    setIsConfirmOpen(false);
+                    setItemToDelete(null);
+                }}
+                onConfirm={confirmDelete}
+            />
         </motion.div>
     );
 }

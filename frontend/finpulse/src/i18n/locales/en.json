@@ -2,7 +2,7 @@
     "common": {
         "dashboard": "Dashboard",
         "portfolio": "Portfolio",
-        "watchlist": "Watchlist",
+        "watchlist": "Watch List",
         "alerts": "Alerts",
         "logout": "Logout",
         "loggedInAs": "Logged In As",
@@ -22,7 +22,21 @@
         "status": "Status",
         "action": "Action",
         "symbolPlaceholder": "Coin Symbol (e.g. BTC)",
-        "priceSymbol": "$"
+        "priceSymbol": "$",
+        "confirmTitle": "Are you sure?",
+        "confirmDelete": "Yes, Delete",
+        "deleteConfirmation": "Are you sure you want to delete this item? This action cannot be undone.",
+        "logoutConfirm": "Sign Out?",
+        "logoutMessage": "You will be logged out of your session. Do you want to continue?",
+        "logoutAction": "Sign Out",
+        "notifications": "Notifications",
+        "unreadMsg": "Unread",
+        "allMarkedRead": "All marked as read",
+        "markAllRead": "Mark All as Read",
+        "noNotifications": "No notifications yet",
+        "noNotificationsDesc": "Your alerts will appear here when triggered.",
+        "markAsRead": "Mark as Read",
+        "changeLanguage": "Change Language"
     },
     "dashboard": {
         "title": "Overview",
@@ -35,20 +49,21 @@
         "totalProfitLoss": "Total Profit / Loss",
         "activeAlertCount": "Active Alert Count",
         "coinCountInPortfolio": "Coins in Portfolio",
-        "watchlistCount": "Watchlist Count",
+        "watchlistCount": "Watch List Count",
         "alertManagement": "Alert Management",
         "goToPortfolio": "Go to Portfolio",
-        "goToWatchlist": "Go to Watchlist",
+        "goToWatchlist": "Go to Watch List",
         "goToAlerts": "Go to Alerts",
         "liveMarketPrices": "Live Market Prices",
         "realTimeData": "Real-time data stream via WebSocket",
         "waitingForData": "Waiting for Data",
         "waitingForDataDesc": "Waiting for live price data stream via socket connection. Please wait.",
         "fetchError": "Error while fetching dashboard data!",
-        "active": "active"
+        "active": "active",
+        "currentPrice": "Current Price"
     },
     "auth": {
-        "welcomeBack": "Welcome Back",
+        "welcome": "Welcome",
         "loginDescription": "Enter your details to log in to your FinPulse account.",
         "email": "Email",
         "password": "Password",
@@ -98,15 +113,15 @@
         "toastCheckError": "Alert check failed."
     },
     "watchlist": {
-        "title": "Watchlist",
+        "title": "Watch List",
         "description": "Add coins you want to track to your favorites.",
         "addFavorite": "Add Favorite Coin",
-        "addButton": "Add to Watchlist",
+        "addButton": "Add to Watch List",
         "adding": "Adding...",
         "myFavorites": "My Favorite Coins",
-        "emptyState": "Watchlist is Empty",
+        "emptyState": "Watch List is Empty",
         "emptyStateDesc": "Create your first favorite by adding a coin from the left to follow the market closely.",
-        "toastAdded": "Added to watchlist!",
+        "toastAdded": "Added to Watch List!",
         "toastAddError": "Failed to add coin. It might already be added.",
         "toastDeleted": "Coin removed from favorites.",
         "toastDeleteError": "Failed to delete coin."
@@ -139,5 +154,24 @@
         "toastRefreshError": "Failed to update prices.",
         "toastDeleted": "Coin deleted.",
         "toastDeleteError": "Failed to delete coin."
+    },
+    "coinDetail": {
+        "title": "Coin Details",
+        "marketCap": "Market Cap",
+        "volume": "24h Volume",
+        "high24h": "24h High",
+        "low24h": "24h Low",
+        "circulatingSupply": "Circulating Supply",
+        "allTimeHigh": "All Time High",
+        "allTimeLow": "All Time Low",
+        "description": "About",
+        "performance": "Performance",
+        "links": "Links",
+        "website": "Website",
+        "explorer": "Explorer",
+        "rank": "Rank",
+        "priceChart": "Price Chart (Last 7 Days)",
+        "backToMarket": "Back to Market",
+        "lastUpdated": "Last Updated"
     }
 }

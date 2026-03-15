@@ -7,11 +7,15 @@ import { Bell, Trash2, ShieldCheck, Plus, History, TrendingUp } from "lucide-rea
 import { motion, type Variants } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
+import ConfirmModal from "../components/ConfirmModal";
+
 export default function AlertsPage() {
     const { alerts, fetchAlerts, loadingAlerts: loading } = useAppStore();
     const [results, setResults] = useState<AlertCheckResult[]>([]);
     const [submitting, setSubmitting] = useState(false);
     const [checking, setChecking] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const { t } = useTranslation();
 
     const [form, setForm] = useState({
@@ -61,13 +65,16 @@ export default function AlertsPage() {
         }
     };
 
-    const handleDelete = async (id: number) => {
+    const confirmDelete = async () => {
+        if (itemToDelete === null) return;
         try {
-            await deleteAlert(id);
+            await deleteAlert(itemToDelete);
             await fetchAlerts();
             toast.success(t("alerts.toastDeleted"));
         } catch (err) {
             toast.error(t("alerts.toastDeleteError"));
+        } finally {
+            setItemToDelete(null);
         }
     };
 
@@ -236,7 +243,10 @@ export default function AlertsPage() {
                                             </td>
                                             <td className="py-4 pr-4">
                                                 <button
-                                                    onClick={() => handleDelete(alert.id)}
+                                                    onClick={() => {
+                                                        setItemToDelete(alert.id);
+                                                        setIsConfirmOpen(true);
+                                                    }}
                                                     className="flex items-center justify-center rounded-lg bg-rose-500/10 p-2 text-rose-400 transition-colors hover:bg-rose-500/20 opacity-0 group-hover:opacity-100 focus:opacity-100"
                                                     title={t("common.delete")}
                                                 >
@@ -307,6 +317,15 @@ export default function AlertsPage() {
                     </div>
                 </motion.section>
             )}
+
+            <ConfirmModal 
+                isOpen={isConfirmOpen}
+                onClose={() => {
+                    setIsConfirmOpen(false);
+                    setItemToDelete(null);
+                }}
+                onConfirm={confirmDelete}
+            />
         </motion.div>
     );
 }

@@ -61,7 +61,7 @@ export default function LoginPage() {
                     >
                         <span className="text-2xl font-bold text-white tracking-tighter">FP</span>
                     </motion.div>
-                    <h1 className="text-3xl font-extrabold text-white tracking-tight">{t("auth.welcomeBack")}</h1>
+                    <h1 className="text-3xl font-extrabold text-white tracking-tight">{t("auth.welcome")}</h1>
                     <p className="mt-3 text-slate-400 text-sm">{t("auth.loginDescription")}</p>
                 </div>
 
