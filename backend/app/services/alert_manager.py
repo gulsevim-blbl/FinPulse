@@ -1,11 +1,12 @@
 import asyncio
 import logging
-from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
-from app.models.alert import Alert
-from app.models.notification import Notification
-from app.services.okx_service import okx_service
-from app.services.mail_service import send_alert_email # Yeni HTML şablonlu servis
+from app.infrastructure.repositories.sqlalchemy_alert_repository import SQLAlchemyAlertRepository
+from app.infrastructure.repositories.sqlalchemy_notification_repository import SQLAlchemyNotificationRepository
+from app.infrastructure.market.okx_provider import OKXMarketProvider
+from app.infrastructure.market.coingecko_provider import CoinGeckoProvider
+from app.services.market_service import MarketService
+from app.services.mail_service import send_alert_email
 
 logger = logging.getLogger(__name__)
 
@@ -13,13 +14,15 @@ class AlertManager:
     def __init__(self):
         self._running = False
         self._task = None
+        # Infrastructure components
+        self.market_service = MarketService([OKXMarketProvider(), CoinGeckoProvider()])
 
     async def start(self):
         if self._running:
             return
         self._running = True
         self._task = asyncio.create_task(self._check_loop())
-        logger.info("Alert Manager started")
+        logger.info("Alert Manager started (Clean Architecture)")
 
     async def stop(self):
         self._running = False
@@ -41,26 +44,20 @@ class AlertManager:
             await asyncio.sleep(10)
 
     async def check_all_alerts(self):
-        db: Session = SessionLocal()
+        db = SessionLocal()
         try:
-            # JOIN yaparak User bilgisini de alıyoruz ki mail adresine erişebilelim
-            active_alerts = db.query(Alert).filter(Alert.is_active == True).all()
+            alert_repo = SQLAlchemyAlertRepository(db)
+            notif_repo = SQLAlchemyNotificationRepository(db)
+            
+            active_alerts = alert_repo.get_active()
             
             for alert in active_alerts:
-                price_data = None
-                if alert.symbol in okx_service.prices:
-                    price_data = okx_service.prices[alert.symbol]
-                else:
-                    usdt_pair = f"{alert.symbol.upper()}-USDT"
-                    if usdt_pair in okx_service.prices:
-                        price_data = okx_service.prices[usdt_pair]
-
-                if not price_data:
+                current_price = self.market_service.get_coin_price_by_symbol(alert.symbol)
+                
+                if current_price is None:
                     continue
 
-                current_price = price_data["current_price"]
                 triggered = False
-
                 if alert.condition_type == "above" and current_price >= alert.target_price:
                     triggered = True
                 elif alert.condition_type == "below" and current_price <= alert.target_price:
@@ -68,19 +65,18 @@ class AlertManager:
 
                 if triggered:
                     alert.is_active = False
+                    alert_repo.update(alert)
                     
-                    # 1. Uygulama İçi Bildirim Oluştur
-                    notification = Notification(
+                    # 1. Create Notification
+                    notif_repo.create(
                         user_id=alert.user_id,
                         title=f"🚨 Alarm Tetiklendi: {alert.symbol}",
                         message=f"{alert.symbol} fiyatı {alert.target_price} {alert.condition_type} seviyesine ulaştı! Güncel: {current_price}",
                         type="alert"
                     )
-                    db.add(notification)
                     
-                    # 2. E-posta Gönder (HTML Şablonu ile)
+                    # 2. Send Email
                     if alert.user and alert.user.email:
-                        # Mail işlemini arka planda başlat
                         asyncio.create_task(
                             send_alert_email(
                                 email_to=alert.user.email,
@@ -92,7 +88,7 @@ class AlertManager:
                             )
                         )
                     
-                    logger.info(f"Alert triggered & Email sent task created for user {alert.user_id}: {alert.symbol}")
+                    logger.info(f"Alert triggered for user {alert.user_id}: {alert.symbol}")
 
             db.commit()
         finally:

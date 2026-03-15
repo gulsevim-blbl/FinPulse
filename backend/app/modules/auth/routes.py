@@ -2,24 +2,22 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db, get_current_user
+from app.api.deps import get_db, get_current_user, get_auth_service
 from app.schemas.user import UserCreate, UserResponse
 from app.schemas.auth import Token, PasswordResetRequest, PasswordReset
-from app.services.auth_service import (
-    get_user_by_email,
-    create_user,
-    authenticate_user,
-    create_password_reset_token,
-    reset_password,
-)
+from app.services.auth_service import AuthService
 from app.core.security import create_access_token
+from app.services.mail_service import send_reset_password_email
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-def register(user_data: UserCreate, db: Session = Depends(get_db)):
-    existing_user = get_user_by_email(db, user_data.email)
+def register(
+    user_data: UserCreate, 
+    service: AuthService = Depends(get_auth_service)
+):
+    existing_user = service.get_user_by_email(user_data.email)
 
     if existing_user:
         raise HTTPException(
@@ -27,17 +25,17 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
             detail="Email already registered",
         )
 
-    user = create_user(db, user_data)
+    user = service.create_user(user_data)
     return user
 
 
 @router.post("/login", response_model=Token)
 def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db),
+    service: AuthService = Depends(get_auth_service),
 ):
     # OAuth2 "username" alanını biz email olarak kullanıyoruz
-    user = authenticate_user(db, form_data.username, form_data.password)
+    user = service.authenticate_user(form_data.username, form_data.password)
 
     if not user:
         raise HTTPException(
@@ -53,15 +51,15 @@ def login(
     }
 
 
-from app.services.mail_service import send_reset_password_email
-
 @router.post("/forgot-password")
-async def forgot_password(request: PasswordResetRequest, db: Session = Depends(get_db)):
-    token = create_password_reset_token(db, request.email)
+async def forgot_password(
+    request: PasswordResetRequest, 
+    service: AuthService = Depends(get_auth_service)
+):
+    token = service.create_password_reset_token(request.email)
     
     if token:
         # E-posta gönderimini başlat
-        # Gerçek bir hata durumunda bile kullanıcıya güvenlik nedeniyle aynı mesajı dönmek iyidir (e-posta adresi ifşasını önlemek için)
         await send_reset_password_email(request.email, token)
         print(f"PASSWORD RESET LINK SENT TO {request.email}")
     
@@ -69,8 +67,11 @@ async def forgot_password(request: PasswordResetRequest, db: Session = Depends(g
 
 
 @router.post("/reset-password")
-def reset_password_route(request: PasswordReset, db: Session = Depends(get_db)):
-    success = reset_password(db, request.token, request.new_password)
+def reset_password_route(
+    request: PasswordReset, 
+    service: AuthService = Depends(get_auth_service)
+):
+    success = service.reset_password(request.token, request.new_password)
     
     if not success:
         raise HTTPException(

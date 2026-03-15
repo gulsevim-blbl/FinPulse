@@ -1,19 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db, get_current_user
+from app.api.deps import get_current_user, get_portfolio_service
 from app.schemas.portfolio import (
     PortfolioItemCreate,
     PortfolioItemResponse,
     PortfolioItemListResponse,
     PortfolioSummary,
 )
-from app.services.portfolio_service import (
-    create_portfolio_item,
-    get_user_portfolio_items,
-    delete_portfolio_item,
-    refresh_portfolio_prices,
-)
+from app.services.portfolio_service import PortfolioService
 
 router = APIRouter(prefix="/portfolio", tags=["Portfolio"])
 
@@ -21,18 +16,18 @@ router = APIRouter(prefix="/portfolio", tags=["Portfolio"])
 @router.post("/items", response_model=PortfolioItemResponse, status_code=status.HTTP_201_CREATED)
 def add_portfolio_item(
     item_data: PortfolioItemCreate,
-    db: Session = Depends(get_db),
+    service: PortfolioService = Depends(get_portfolio_service),
     current_user=Depends(get_current_user),
 ):
-    return create_portfolio_item(db, current_user.id, item_data)
+    return service.create_portfolio_item(current_user.id, item_data)
 
 
 @router.get("/items", response_model=PortfolioItemListResponse)
 def list_portfolio_items(
-    db: Session = Depends(get_db),
+    service: PortfolioService = Depends(get_portfolio_service),
     current_user=Depends(get_current_user),
 ):
-    items = get_user_portfolio_items(db, current_user.id)
+    items = service.get_user_portfolio_items(current_user.id)
 
     result = []
     for item in items:
@@ -58,10 +53,10 @@ def list_portfolio_items(
 
 @router.post("/refresh-prices", status_code=status.HTTP_200_OK)
 def refresh_prices(
-    db: Session = Depends(get_db),
+    service: PortfolioService = Depends(get_portfolio_service),
     current_user=Depends(get_current_user),
 ):
-    updated_symbols = refresh_portfolio_prices(db, current_user.id)
+    updated_symbols = service.refresh_portfolio_prices(current_user.id)
 
     return {
         "message": "Portfolio prices refreshed successfully",
@@ -72,10 +67,10 @@ def refresh_prices(
 @router.delete("/items/{item_id}", status_code=status.HTTP_200_OK)
 def remove_portfolio_item(
     item_id: int,
-    db: Session = Depends(get_db),
+    service: PortfolioService = Depends(get_portfolio_service),
     current_user=Depends(get_current_user),
 ):
-    deleted_item = delete_portfolio_item(db, item_id, current_user.id)
+    deleted_item = service.delete_portfolio_item(item_id, current_user.id)
 
     if not deleted_item:
         raise HTTPException(
