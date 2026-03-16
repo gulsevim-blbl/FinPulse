@@ -31,12 +31,6 @@ FinPulse, kripto yatırımcıları için geliştirilmiş, portföy yönetimi, ge
 - **TailwindCSS** & **Sass/CSS** (Modern responsive tasarım)
 - **i18n** (Çoklu dil desteği)
 
-## 📸 Uygulama Görselleri
-
-Demo için bazı ekran görüntüleri:
-
-
-
 ## ⚡ Kurulum
 
 > **Not:** Backend için bir `.env` dosyası oluşturmanız gerekebilir. Detaylar için backend klasöründeki örnek dosyaya bakınız.
