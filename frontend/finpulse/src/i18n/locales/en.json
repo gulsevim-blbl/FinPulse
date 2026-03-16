@@ -36,7 +36,8 @@
         "noNotifications": "No notifications yet",
         "noNotificationsDesc": "Your alerts will appear here when triggered.",
         "markAsRead": "Mark as Read",
-        "changeLanguage": "Change Language"
+        "changeLanguage": "Change Language",
+        "markets": "Markets"
     },
     "dashboard": {
         "title": "Overview",
@@ -60,7 +61,23 @@
         "waitingForDataDesc": "Waiting for live price data stream via socket connection. Please wait.",
         "fetchError": "Error while fetching dashboard data!",
         "active": "active",
-        "currentPrice": "Current Price"
+        "currentPrice": "Current Price",
+        "marketsLabel": "Markets",
+        "discoverPrices": "Discover Current Prices",
+        "viewAll": "View All"
+    },
+    "markets": {
+        "title": "Markets",
+        "trending": "Trending",
+        "gainers": "Gainers",
+        "losers": "Losers",
+        "favorites": "Favorites",
+        "coinName": "Crypto Asset Name",
+        "price": "Price",
+        "change24h": "Change (24h)",
+        "chart": "Chart",
+        "noFavorites": "No Favorite Coins",
+        "noFavoritesDesc": "Click the star icon to add coins to your favorites."
     },
     "auth": {
         "welcome": "Welcome",

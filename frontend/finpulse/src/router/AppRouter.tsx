@@ -9,6 +9,7 @@ import ResetPasswordPage from "../pages/ResetPasswordPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import ProtectedAppLayout from "../layouts/ProtectedAppLayout";
 import CoinDetailPage from "../pages/CoinDetailPage";
+import MarketsPage from "../pages/MarketsPage";
 
 export default function AppRouter() {
     return (
@@ -26,6 +27,7 @@ export default function AppRouter() {
                     <Route path="/watchlist" element={<WatchlistPage />} />
                     <Route path="/alerts" element={<AlertsPage />} />
                     <Route path="/coin/:id" element={<CoinDetailPage />} />
+                    <Route path="/markets" element={<MarketsPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

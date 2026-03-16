@@ -36,7 +36,8 @@
         "noNotifications": "Henüz bildirim yok",
         "noNotificationsDesc": "Alarmlarınız tetiklendiğinde burada görünecek.",
         "markAsRead": "Okundu İşaretle",
-        "changeLanguage": "Dili Değiştir"
+        "changeLanguage": "Dili Değiştir",
+        "markets": "Piyasalar"
     },
     "dashboard": {
         "title": "Genel Bakış",
@@ -60,7 +61,23 @@
         "waitingForDataDesc": "Soket bağlantısı üzerinden canlı fiyat verilerinin akışı bekleniyor. Lütfen bekleyin.",
         "fetchError": "Dashboard verileri alınırken hata oluştu!",
         "active": "aktif",
-        "currentPrice": "Güncel Fiyat"
+        "currentPrice": "Güncel Fiyat",
+        "marketsLabel": "Piyasalar",
+        "discoverPrices": "Güncel Fiyatları Keşfet",
+        "viewAll": "Tümünü Gör"
+    },
+    "markets": {
+        "title": "Piyasalar",
+        "trending": "En Çok İşlem Görenler",
+        "gainers": "Yükselenler",
+        "losers": "Düşenler",
+        "favorites": "Favoriler",
+        "coinName": "Kripto Varlık Adı",
+        "price": "Fiyat",
+        "change24h": "Değişim (24s)",
+        "chart": "Grafik",
+        "noFavorites": "Favori Coin Yok",
+        "noFavoritesDesc": "Yıldız ikonuna tıklayarak coinleri favorilerine ekleyebilirsin."
     },
     "auth": {
         "welcome": "Hoş Geldiniz",

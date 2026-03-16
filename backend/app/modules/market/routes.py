@@ -25,7 +25,14 @@ def get_coin_detail(
     coin_id: str,
     service: MarketService = Depends(get_market_service)
 ):
-    details = service.get_coin_details(coin_id)
+    try:
+        details = service.get_coin_details(coin_id)
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"Market data service error: {str(e)}")
+    
     if not details:
-        raise HTTPException(status_code=404, detail="Coin not found")
+        raise HTTPException(
+            status_code=503,
+            detail=f"Could not fetch coin details for '{coin_id}'. CoinGecko API may be rate-limited or unavailable."
+        )
     return details

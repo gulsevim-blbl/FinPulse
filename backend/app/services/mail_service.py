@@ -37,33 +37,55 @@ async def send_email(email_to: EmailStr, subject: str, body: str, is_html: bool 
         return False
 
 async def send_reset_password_email(email_to: EmailStr, token: str):
-    """Şifre sıfırlama e-postası"""
+    """Şifre sıfırlama e-postası gönderir"""
+
     reset_link = f"http://localhost:5173/reset-password?token={token}"
-    
+
     html = f"""
     <html>
         <body style="font-family: Arial, sans-serif; background-color: #020617; color: #ffffff; padding: 20px;">
             <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; padding: 40px; border-radius: 20px; border: 1px solid #1e293b;">
+                
                 <div style="text-align: center; margin-bottom: 30px;">
-                    <div style="display: inline-block; padding: 10px; background: linear-gradient(to tr, #22d3ee, #2563eb); border-radius: 12px; margin-bottom: 10px;">
-                        <span style="font-size: 24px; color: white; font-weight: bold;">FP</span>
-                    </div>
                     <h1 style="color: #ffffff; margin: 0; font-size: 24px;">FinPulse</h1>
                 </div>
+
                 <h2 style="color: #22d3ee; text-align: center;">Şifre Sıfırlama Talebi</h2>
+
                 <p>Merhaba,</p>
-                <p>Hesabınız için şifre sıfırlama talebinde bulundunuz. Aşağıdaki butona tıklayarak yeni şifrenizi belirleyebilirsiniz:</p>
+
+                <p>
+                    FinPulse hesabınız için bir <strong>şifre sıfırlama talebi</strong> aldık.
+                    Yeni bir şifre belirlemek için aşağıdaki butona tıklayabilirsiniz.
+                </p>
+
                 <div style="text-align: center; margin: 30px 0;">
-                    <a href="{reset_link}" style="background-color: #0ea5e9; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 10px; font-weight: bold; display: inline-block;">Şifremi Sıfırla</a>
+                    <a href="{reset_link}" 
+                       style="background-color: #0ea5e9; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 10px; font-weight: bold; display: inline-block;">
+                        Şifremi Sıfırla
+                    </a>
                 </div>
-                <p style="color: #94a3b8; font-size: 14px;">Eğer bu talebi siz yapmadıysanız, lütfen bu e-postayı dikkate almayın. Bu bağlantı 1 saat içinde geçerliliğini yitirecektir.</p>
-                <hr style="border: 0; border-top: 1px solid #1e293b; margin: 30px 0;">
-                <p style="text-align: center; color: #64748b; font-size: 12px;">© 2026 FinPulse | Tüm Hakları Saklıdır.</p>
+
+                <p style="color: #94a3b8; font-size: 14px;">
+                    Eğer bu talebi siz oluşturmadıysanız bu e-postayı dikkate almayabilirsiniz.
+                    Güvenliğiniz için bu bağlantı <strong>1 saat içinde geçerliliğini kaybedecektir.</strong>
+                </p>
+
+               <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #1e293b; text-align: center; font-size: 12px; color: #64748b;">
+                    © 2026 FinPulse — Tüm Hakları Saklıdır.
+                </div>
+
             </div>
         </body>
     </html>
     """
-    return await send_email(email_to, "FinPulse - Şifre Sıfırlama Talebi", html, is_html=True)
+
+    return await send_email(
+        email_to=email_to,
+        subject="FinPulse - Şifre Sıfırlama Talebi",
+        body=html,
+        is_html=True
+    )
 
 async def send_alert_email(email_to: EmailStr, user_name: str, symbol: str, target_price: float, current_price: float, condition: str):
     """Premium Görünümlü Fiyat Alarmı E-postası"""

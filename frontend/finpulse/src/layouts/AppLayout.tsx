@@ -1,5 +1,5 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, PieChart, Star, Bell, LogOut, Menu, X, Activity, Languages, User } from "lucide-react";
+import { LayoutDashboard, PieChart, Star, Bell, LogOut, Menu, X, Activity, Languages, User, BarChart2 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -19,6 +19,7 @@ export default function AppLayout({ fullName }: AppLayoutProps) {
 
     const navItems = [
         { label: t("common.dashboard"), path: "/dashboard", icon: LayoutDashboard },
+        { label: t("common.markets"), path: "/markets", icon: BarChart2 },
         { label: t("common.portfolio"), path: "/portfolio", icon: PieChart },
         { label: t("common.watchlist"), path: "/watchlist", icon: Star },
         { label: t("common.alerts"), path: "/alerts", icon: Bell },
