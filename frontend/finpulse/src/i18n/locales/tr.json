@@ -37,7 +37,17 @@
         "noNotificationsDesc": "Alarmlarınız tetiklendiğinde burada görünecek.",
         "markAsRead": "Okundu İşaretle",
         "changeLanguage": "Dili Değiştir",
-        "markets": "Piyasalar"
+        "markets": "Piyasalar",
+        "news": "Haberler"
+    },
+    "news": {
+        "title": "Kripto ve Finans Haberleri",
+        "description": "Güncel kripto para ve finans haberleri",
+        "loading": "Haberler yükleniyor...",
+        "error": "Haberler yüklenirken hata oluştu. API anahtarınızı kontrol edin.",
+        "apiRequired": "NewsAPI anahtarı gereklidir. newsapi.org'dan ücretsiz anahtar alın.",
+        "readMore": "Haberi Oku →",
+        "loadMore": "Daha Fazla"
     },
     "dashboard": {
         "title": "Genel Bakış",

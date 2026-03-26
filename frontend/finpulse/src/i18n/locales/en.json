@@ -37,7 +37,17 @@
         "noNotificationsDesc": "Your alerts will appear here when triggered.",
         "markAsRead": "Mark as Read",
         "changeLanguage": "Change Language",
-        "markets": "Markets"
+        "markets": "Markets",
+        "news": "News"
+    },
+    "news": {
+        "title": "Crypto and Finance News",
+        "description": "Latest crypto and finance news",
+        "loading": "Loading news...",
+        "error": "Error loading news. Please check your API key.",
+        "apiRequired": "NewsAPI key is required. Get a free key from newsapi.org.",
+        "readMore": "Read More →",
+        "loadMore": "Load More"
     },
     "dashboard": {
         "title": "Overview",

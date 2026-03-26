@@ -10,6 +10,7 @@ import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import ProtectedAppLayout from "../layouts/ProtectedAppLayout";
 import CoinDetailPage from "../pages/CoinDetailPage";
 import MarketsPage from "../pages/MarketsPage";
+import NewsPage from "../pages/NewsPage";
 
 export default function AppRouter() {
     return (
@@ -28,6 +29,7 @@ export default function AppRouter() {
                     <Route path="/alerts" element={<AlertsPage />} />
                     <Route path="/coin/:id" element={<CoinDetailPage />} />
                     <Route path="/markets" element={<MarketsPage />} />
+                    <Route path="/news" element={<NewsPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
